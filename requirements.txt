@@ -3,8 +3,14 @@ appdirs==1.4.2
 async-timeout==1.1.0
 chardet==2.3.0
 discord.py==0.16.6
+imgurpython==1.1.7
 multidict==2.1.4
 packaging==16.8
+pbr==1.10.0
 pyparsing==2.1.10
+requests==2.13.0
 six==1.10.0
+stevedore==1.20.0
+virtualenv==15.1.0
+virtualenv-clone==0.2.6
 websockets==3.2

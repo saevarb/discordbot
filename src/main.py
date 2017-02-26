@@ -1,6 +1,8 @@
 import discord
 import asyncio
-
+import http.client
+import urllib.request
+import logging
 client = discord.Client()
 
 @client.event
@@ -14,15 +16,37 @@ async def on_ready():
 async def on_message(message):
     if message.content.startswith('!test'):
         counter = 0
+        # await client.delete_message(message)
         tmp = await client.send_message(message.channel, 'Calculating messages...')
         async for log in client.logs_from(message.channel, limit=100):
             if log.author == message.author:
                 counter += 1
         await client.edit_message(tmp, 'You have {} messages.'.format(counter))
+    if message.content.startswith('!insult'):
+        hasTarget = len(message.content.split()) > 1
+
+        if hasTarget:
+            targets = message.mentions
+            await client.delete_message(message)
+            for target in message.mentions:
+                print('Insulting {}'.format(target.mention))
+                with urllib.request.urlopen('http://insult.mattbas.org/api/insult.txt?who=' + target.name) as f:
+                    insult = f.read().decode('utf-8')
+                    insult = insult.replace(target.name, target.mention)
+                    await client.send_message(message.channel, insult)
+        else:
+            with urllib.request.urlopen('http://insult.mattbas.org/api/insult.txt') as f:
+                insult = f.read().decode('utf-8')
+                await client.send_message(message.channel, insult)
     elif message.content.startswith('!sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')
 
+logger = logging.getLogger('discord')
+logger.setLevel(logging.DEBUG)
+handler = logging.FileHandler(filename='discord.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 with open('.token.secret') as f:
     token = f.readline()

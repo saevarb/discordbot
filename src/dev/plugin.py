@@ -5,7 +5,9 @@ import os
 def loadPlugins():
     modules = {}
     for path in glob.glob('plugins/*.py'):
-        plugName = os.path.splitext(path.replace('/', '.'))[0]
+
+        plugName = os.path.splitext(path.replace(os.sep, '.'))[0]
+
         spec = importlib.util.spec_from_file_location(plugName, path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)

@@ -3,6 +3,7 @@ import asyncio
 import http.client
 import urllib.request
 import logging
+import json
 client = discord.Client()
 
 @client.event
@@ -27,7 +28,6 @@ async def on_message(message):
 
         if hasTarget:
             targets = message.mentions
-            await client.delete_message(message)
             for target in message.mentions:
                 print('Insulting {}'.format(target.mention))
                 with urllib.request.urlopen('http://insult.mattbas.org/api/insult.txt?who=' + target.name) as f:
@@ -38,6 +38,20 @@ async def on_message(message):
             with urllib.request.urlopen('http://insult.mattbas.org/api/insult.txt') as f:
                 insult = f.read().decode('utf-8')
                 await client.send_message(message.channel, insult)
+
+    if message.content.startswith('!chuck'):
+        with urllib.request.urlopen('http://api.icndb.com/jokes/random') as f:
+            chuck = f.read().decode('utf-8')
+            asJson = json.loads(chuck)
+            await client.send_message(message.channel, asJson['value']['joke'])
+
+    if message.content.startswith('!yoMomma'):
+        with urllib.request.urlopen('http://api.yomomma.info/') as f:
+            momma = f.read().decode('utf-8')
+            asJson = json.loads(momma)
+            await client.send_message(message.channel, asJson['joke'])
+
+
     elif message.content.startswith('!sleep'):
         await asyncio.sleep(5)
         await client.send_message(message.channel, 'Done sleeping')

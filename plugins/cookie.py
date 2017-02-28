@@ -8,14 +8,14 @@ async def cookieHandler(client, message):
         targets = message.mentions
         for target in message.mentions:
             if random.randint(1,100) > 75:
-                await client.send_message(message.channel, "Cookie Monster ate {}'s cookie!".format(target.name))
+                await client.send_message(message.channel, "Cookie Monster ate {}'s cookie!".format(target.mention))
             else:
-                await client.send_message(message.channel, '{} got a cookie.'.format(target.name))
+                await client.send_message(message.channel, '{} got a cookie.'.format(target.mention))
     else:
         if random.randint(1,100) > 75:
-            await client.send_message(message.channel, 'Cookie Monster ate {} cookie!'.format(message.author.name))
+            await client.send_message(message.channel, 'Cookie Monster ate {} cookie!'.format(message.author.mention))
         else:
-            await client.send_message(message.channel, '{} got a cookie.'.format(message.author.name))
+            await client.send_message(message.channel, '{} got a cookie.'.format(message.author.mention))
 
 plugin = Plugin("Cookie plugin", "Might give a cookie")
 plugin.addHandler(CommandHandler("!cookie", cookieHandler, "!cookie [@User mention] - might give a cookie to you or someone you mentioned."))

@@ -10,6 +10,7 @@ from dev.plugin import loadPlugins
 
 client = discord.Client()
 client.plugins = loadPlugins()
+# TODO: Necessary?
 # discord.opus.load_opus()
 
 @client.event

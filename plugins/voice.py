@@ -6,7 +6,7 @@ from dev.plugin import *
 
 # TODO: Make sending a clip easier
 
-async def voiceHandler(client, message):
+async def rimshotHandler(client, message):
     # Grab the user who sent the message as a Member
     dest = discord.utils.get(message.server.members, name=message.author.name)
 
@@ -17,28 +17,11 @@ async def voiceHandler(client, message):
 
     # We want to join the voice channel that the sender is in
     dest = dest.voice.voice_channel
+    client.voiceCount += 1
+    await client.voiceQueue.put((client.voiceCount, SoundCommand('rimshot.mp3', dest, disconnectAfter=False)))
 
-    # If we are already connected voice, grab that voice object
-    voice = client.voice_client_in(message.server)
 
-    # If we aren't connected to voice, join the sender's channel
-    # TODO: Handle moving channels if necessary
-    if not voice or not voice.is_connected():
-        voice = await client.join_voice_channel(dest)
-
-    # Create and start the player
-    player = voice.create_ffmpeg_player('rimshot.mp3')
-    player.start()
-
-    # Wait for the player to be done
-    # TODO: better solution?
-    while not player.is_done():
-        await asyncio.sleep(0.5)
-
-    # Disconnect from voice
-    await voice.disconnect()
-
-async def ytHandler(client, message):
+async def rrHandler(client, message):
     # Grab the user who sent the message as a Member
     dest = discord.utils.get(message.server.members, name=message.author.name)
 
@@ -49,28 +32,14 @@ async def ytHandler(client, message):
 
     # We want to join the voice channel that the sender is in
     dest = dest.voice.voice_channel
+    client.voiceCount += 1
+    await client.voiceQueue.put((client.voiceCount, SoundCommand('rr-short.mp4', dest)))
 
-    # If we are already connected voice, grab that voice object
-    voice = client.voice_client_in(message.server)
 
-    # If we aren't connected to voice, join the sender's channel
-    # TODO: Handle moving channels if necessary
-    if not voice or not voice.is_connected():
-        voice = await client.join_voice_channel(dest)
-
-    # Create and start the player
-    # player = await voice.create_ytdl_player('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-    player = voice.create_ffmpeg_player('rr-short.mp4')
-    player.start()
-
-    # Wait for the player to be done
-    # TODO: better solution?
-    while not player.is_done():
-        await asyncio.sleep(1)
-
-    # Disconnect from voice
-    await voice.disconnect()
+async def stopHandler(client, message):
+    await client.voiceQueue.put((0, StopCommand()))
 
 plugin = Plugin("Voice fun", "Receive a friendly message from your Robot Overlord")
-plugin.addHandler(CommandHandler("!badumts", voiceHandler, "!badumts - Tell your friend how funny he is"))
-plugin.addHandler(CommandHandler("!rr", ytHandler, "!rr"))
+plugin.addHandler(CommandHandler("!badumts", rimshotHandler, "!badumts - Tell your friend how funny he is"))
+plugin.addHandler(CommandHandler("!rr", rrHandler, "!rr - Profess your love for your comrades"))
+plugin.addHandler(CommandHandler("!stop", stopHandler, "!stop - Stop the currently playing sound"))

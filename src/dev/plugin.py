@@ -14,6 +14,24 @@ def loadPlugins():
         modules[plugName] = module.plugin
     return modules
 
+class VoiceCommand(object):
+    def __init__(self, url, dest, disconnectAfter=True):
+        self.url = url
+        self.dest = dest
+        self.disconnectAfter = disconnectAfter
+
+class YoutubeCommand(VoiceCommand):
+    def __init__(self, url, dest, disconnectAfter=True):
+        super().__init__(url, dest, disconnectAfter)
+
+class SoundCommand(VoiceCommand):
+    def __init__(self, url, dest, disconnectAfter=True):
+        super().__init__(url, dest, disconnectAfter)
+
+class StopCommand(VoiceCommand):
+    def __init__(self):
+        super().__init__(None, None)
+
 class Plugin():
     def __init__(self, name, help):
         self.name = name

@@ -5,6 +5,7 @@ from dev.plugin import *
 
 
 async def reloadHandler(client, message):
+    await client.delete_message(message)
     tmp = await client.send_message(message.channel, "Reloading plugins..")
     client.plugins = loadPlugins()
     await client.edit_message(tmp, "Plugins reloaded!")
